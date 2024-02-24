@@ -1,7 +1,6 @@
 package com.EHRC.EHRC.RestControllers;
 
 import com.EHRC.EHRC.CustomExceptions.PhoneNumberNotValidException;
-import com.EHRC.EHRC.CustomResponseEntity.PhoneNumberNotValidErrorResponse;
 import com.EHRC.EHRC.Utilities.Utilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -41,22 +40,6 @@ public class WhatsAppBotController {
     public void getRequest(@RequestBody String json){
         System.out.println(json);
     }
-
-
-//
-//    @GetMapping("/webhook")
-//    public void getWebHookCallBack() {
-//        System.out.println();
-//
-//    }
-//
-//
-//
-//    @PostMapping("/webhook")
-//    public void processWebHookCallBack() {
-//        System.out.println();
-//
-//    }
 
 
     @GetMapping("/sendTestMessage/{whatsAppNumber}")
@@ -118,30 +101,35 @@ public class WhatsAppBotController {
         }
         return fullAPIPath;
     }
-
-
-//    @ExceptionHandler
-//    public ResponseEntity<PhoneNumberNotValidErrorResponse> handlePhoneNumberNotValidException(PhoneNumberNotValidException exception) {
-//
-//        PhoneNumberNotValidErrorResponse errorResponse = new PhoneNumberNotValidErrorResponse();
-//        errorResponse.setMessage(exception.getMessage());
-//        errorResponse.setTimeStamp(System.currentTimeMillis());
-//        errorResponse.setStatusCode(HttpStatus.BAD_REQUEST.value());
-//
-//        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-//    }
-
-
-//    @ExceptionHandler
-//    public ResponseEntity<PhoneNumberNotValidErrorResponse> handleWebserviceResponseException(IOException exception) {
-//
-//        System.out.println("ResponseEntity<PhoneNumberNotValidErrorResponse> handleWebserviceResponseException called");
-//        System.out.println("exceptions is : " + exception);
-//        PhoneNumberNotValidErrorResponse errorResponse = new PhoneNumberNotValidErrorResponse();
-//        errorResponse.setMessage(exception.getMessage());
-//        errorResponse.setTimeStamp(System.currentTimeMillis());
-//        errorResponse.setStatusCode(HttpStatus.BAD_REQUEST.value());
-//
-//        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-//    }
 }
+
+
+
+/*
+public class SendCustomTemplateMessage {
+
+    //customfoodmessagetemplate
+
+    String body = "\"{\"messaging_product\":\"whatsapp\"," +
+            "\"recipient_type\":\"individual\"," +
+            "\"to\":\"919015346166\"" +
+            ",\"type\":\"template\"," +
+            "\"template\":{\"name\":\"customfoodmessagetemplate\"," +
+            "\"language\":{\"code\":\"en\"}," +
+            "\"components\":[{\"type\":\"header\"," +
+            "\"parameters\":[{\"type\":\"image\",\"image\":" +
+            "{\"link\":\"https://images.spoonacular.com/file/wximages/423186-636x393.png\"}}]}," +
+            "{\"type\":\"body\",\"parameters\":" +
+            "[{\"type\":\"text\",\"text\":\"Hello!!! Welcome to the world of burgers.\"}," +
+            "{\"type\":\"currency\",\"currency\":" +
+            "{\"fallback_value\":\"$3.5\",\"code\":\"USD\",\"amount_1000\":\"3500\"}}," +
+            "{\"type\":\"date_time\",\"date_time\":{\"fallback_value\":\"July 20,2024\"}}]}," +
+
+
+            "{\"type\":\"button\",\"sub_type\":\"quick_reply\",\"index\":\"0\"," +
+            "\"parameters\":[{\"type\":\"payload\",\"payload\":\"A\"}]}," +
+            "{\"type\":\"button\",\"sub_type\":\"quick_reply\",\"index\":\"1\"," +
+            "\"parameters\":[{\"type\":\"payload\",\"payload\":\"B\"}]}]}}\"";
+
+}
+*/
