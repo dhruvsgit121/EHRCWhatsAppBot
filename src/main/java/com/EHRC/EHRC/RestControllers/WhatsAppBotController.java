@@ -1,6 +1,8 @@
 package com.EHRC.EHRC.RestControllers;
 
 import com.EHRC.EHRC.CustomExceptions.PhoneNumberNotValidException;
+import com.EHRC.EHRC.DTU.BotMenuNames;
+import com.EHRC.EHRC.Repository.BotMenuRepository;
 import com.EHRC.EHRC.Utilities.Utilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -14,6 +16,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.List;
 
 
 @RestController
@@ -21,6 +24,17 @@ import java.net.URL;
 public class WhatsAppBotController {
     @Autowired
     private Environment env;
+
+
+    @Autowired
+    private BotMenuRepository botMenuRepository;
+
+
+    @PostMapping("/getChildMenuItems")
+    public List<BotMenuNames> getMenuChildNames(@RequestParam String menuName) {
+        System.out.println("List<BotMenuNames> getMenuChildNames called : " + menuName);
+        return botMenuRepository.getBotChildMenuNames(menuName);
+    }
 
 
     @GetMapping("/webhook")
@@ -36,8 +50,9 @@ public class WhatsAppBotController {
             return new ResponseEntity<>("Verification token or mode mismatch", HttpStatus.FORBIDDEN);
         }
     }
+
     @PostMapping("/webhook")
-    public void getRequest(@RequestBody String json){
+    public void getRequest(@RequestBody String json) {
         System.out.println(json);
     }
 
@@ -60,20 +75,39 @@ public class WhatsAppBotController {
 
         System.out.println("Whatsapp number is " + fullAPIPath);
 
-        String body2 = "{\"messaging_product\":\"whatsapp\",\"recipient_type\":\"individual\"," +
-                "\"to\":" + "\"" + "91" +
-                whatsAppNumber + "\"" +
-                ",\"type\":\"template\"," +
-                "\"template\":{\"name\":\"dhruv\",\"language\":{\"code\":\"en\"}," +
-                "\"components\":[{\"type\":\"header\",\"parameters\":[{\"type\":\"image\"," +
-                "\"image\":{\"link\":\"https://images.spoonacular.com/file/wximages/423186-636x393.png\"}}]}," +
-                "{\"type\":\"body\",\"parameters\":[{\"type\":\"text\",\"text\":\"Helloworld\"}," +
-                "{\"type\":\"currency\",\"currency\":" +
-                "{\"fallback_value\":\"VALUE\",\"code\":\"USD\",\"amount_1000\":3500}}]}," +
-                "{\"type\":\"button\",\"sub_type\":\"quick_reply\",\"index\":\"0\",\"parameters\":" +
-                "[{\"type\":\"payload\",\"payload\":\"A\"}]}," +
-                "{\"type\":\"button\",\"sub_type\":\"quick_reply\",\"index\":\"1\"," +
-                "\"parameters\":[{\"type\":\"payload\",\"payload\":\"B\"}]}]}}";
+        String body2 = "{messaging_product:\"whatsapp\",recipient_type:\"individual\",to:\"919015346166\",type:\"interactive\",interactive:{type:\"list\",header:{type:\"text\",text:\"Select the food item you would like.\",},body:{text:\"You will be presented with a list of options to choose from.\",},footer:{text:\"All of them are freshly packed.\",},action:{button:\"Order\",sections:[{title:\"Section1-Fruit\",rows:[{id:\"1\",title:\"Apple\",description:\"Dozen\",},{id:\"2\",title:\"Orange\",description:\"Dozen\",},],},{title:\"Section2-Vegetables\",rows:[{id:\"3\",title:\"Spinach\",description:\"1kg\",},{id:\"2\",title:\"Broccoli\",description:\"1kg\",},],},],},},}";
+
+//        String body2 = "{\"from\":\"224738690728648\",\"to\":\"919015346166\"," +
+//                "\"channel\":\"whatsapp\",\"message_type\":\"custom\"," +
+//                "\"custom\":{\"type\":\"interactive\",\"interactive\":" +
+//                "{\"type\":\"list\",\"header\":{\"type\":\"text\"," +
+//                "\"text\":\"Selectwhichpillyouwouldlike\"},\"body\":" +
+//                "{\"text\":\"Youwillbepresentedwithalistofoptions\"},\"footer\":" +
+//                "{\"text\":\"Therearenowrongchoices\"},\"action\":{\"button\":\"Select\",\"sections\":" +
+//                "[{\"title\":\"SectionA-pills\",\"rows\":" +
+//                "[{\"id\":\"row1\",\"title\":\"Red\",\"description\":\"Taketheredpill\"}," +
+//                "{\"id\":\"row2\",\"title\":\"Blue\",\"description\":\"Takethebluepill\"}," +
+//                "{\"id\":\"row3\",\"title\":\"Green\",\"description\":\"Takethegreenpill\"}]}," +
+//                "{\"title\":\"SectionB-nopills\",\"rows\":" +
+//                "[{\"id\":\"row4\",\"title\":\"Nothing\",\"description\":\"Donottakeapill\"}]}]}}}}";
+
+
+//        String body2 = "{\"messaging_product\":\"whatsapp\",\"recipient_type\":\"individual\"," +
+//                "\"to\":" + "\"" + "91" +
+//                whatsAppNumber + "\"" +
+//                ",\"type\":\"template\"," +
+//                "\"template\":{\"name\":\"dhruv\",\"language\":{\"code\":\"en\"}," +
+//                "\"components\":[{\"type\":\"header\",\"parameters\":[{\"type\":\"image\"," +
+//                "\"image\":{\"link\":\"https://images.spoonacular.com/file/wximages/423186-636x393.png\"}}]}," +
+//                "{\"type\":\"body\",\"parameters\":[{\"type\":\"text\",\"text\":\"My name is rahul Jagger!!!!  \"}," +
+//                "{\"type\":\"currency\",\"currency\":" +
+//                "{\"fallback_value\":\"VALUE\",\"code\":\"USD\",\"amount_1000\":3500}}]}," +
+//                "{\"type\":\"button\",\"sub_type\":\"quick_reply\",\"index\":\"0\",\"parameters\":" +
+//                "[{\"type\":\"payload\",\"payload\":\"A\"}]}," +
+//                "{\"type\":\"button\",\"sub_type\":\"quick_reply\",\"index\":\"1\",\"parameters\":" +
+//                "[{\"type\":\"payload\",\"payload\":\"A\"}]}," +
+//                "{\"type\":\"button\",\"sub_type\":\"quick_reply\",\"index\":\"2\"," +
+//                "\"parameters\":[{\"type\":\"payload\",\"payload\":\"aGlzIHRoaXMgaXMgY29vZHNhc2phZHdpcXdlMGZoIGFTIEZISUQgV1FEV0RT\"}]}]}}";
 
 
         System.out.println("Body is : " + body2);
@@ -133,3 +167,60 @@ public class SendCustomTemplateMessage {
 
 }
 */
+
+//
+//{
+//        messaging_product: "whatsapp",
+//        recipient_type: "individual",
+//        to: "919015346166",
+//        type: "interactive",
+//        interactive: {
+//        type: "list",
+//        header: {
+//        type: "text",
+//        text: "Select the food item you would like",
+//        },
+//        body: {
+//        text: "You will be presented with a list of options to choose from",
+//        },
+//        footer: {
+//        text: "All of them are freshly packed",
+//        },
+//        action: {
+//        button: "Order",
+//        sections: [
+//        {
+//        title: "Section 1 - Fruit",
+//        rows: [
+//        {
+//        id: "1",
+//        title: "Apple",
+//        description: "Dozen",
+//        },
+//        {
+//        id: "2",
+//        title: "Orange",
+//        description: "Dozen",
+//        },
+//        ],
+//        },
+//        {
+//        title: "Section 2 - Vegetables",
+//        rows: [
+//        {
+//        id: "3",
+//        title: "Spinach",
+//        description: "1kg ",
+//        },
+//        {
+//        id: "2",
+//        title: "Broccoli",
+//        description: "1kg",
+//        },
+//        ],
+//        },
+//        ],
+//        },
+//        },
+//        }
+
