@@ -14,4 +14,5 @@ public class BotMenuNames {
     private int parentID;
     private String BotMenuName;
     private int childId;
+    private String childMenuName;
 }
