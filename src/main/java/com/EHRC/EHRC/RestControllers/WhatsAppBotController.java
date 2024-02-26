@@ -4,6 +4,7 @@ import com.EHRC.EHRC.CustomExceptions.PhoneNumberNotValidException;
 import com.EHRC.EHRC.DTU.BotMenuNames;
 import com.EHRC.EHRC.Repository.BotMenuRepository;
 import com.EHRC.EHRC.Utilities.Utilities;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,10 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 
 @RestController
@@ -38,9 +42,7 @@ public class WhatsAppBotController {
 
 
     @GetMapping("/webhook")
-    public ResponseEntity<String> webhookVerify(@RequestParam("hub.mode") String mode,
-                                                @RequestParam("hub.challenge") String challenge,
-                                                @RequestParam("hub.verify_token") String token) {
+    public ResponseEntity<String> webhookVerify(@RequestParam("hub.mode") String mode, @RequestParam("hub.challenge") String challenge, @RequestParam("hub.verify_token") String token) {
         System.out.println(mode);
         System.out.println(challenge);
         System.out.println(token);
@@ -54,6 +56,21 @@ public class WhatsAppBotController {
     @PostMapping("/webhook")
     public void getRequest(@RequestBody String json) {
         System.out.println(json);
+
+        try {
+
+// ObjectMapper instantiation
+            ObjectMapper objectMapper = new ObjectMapper();
+
+// Deserialization into a Map
+            Map<String, Object> result = objectMapper.readValue(json, HashMap.class);
+
+// Printing the results
+            System.out.println("Map result set is : " + result.entrySet());
+        }catch (Exception e){
+            System.out.println("Exception occurred!!!");
+        }
+
     }
 
 
