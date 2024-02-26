@@ -4,6 +4,7 @@ import com.EHRC.EHRC.CustomExceptions.PhoneNumberNotValidException;
 import com.EHRC.EHRC.DTU.BotMenuNames;
 import com.EHRC.EHRC.Repository.BotMenuRepository;
 import com.EHRC.EHRC.Utilities.Utilities;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -61,9 +62,9 @@ public class WhatsAppBotController {
 
 // ObjectMapper instantiation
             ObjectMapper objectMapper = new ObjectMapper();
-
+            TypeReference<Map<String, Object>> typeReference = new TypeReference<Map<String, Object>>(){};
 // Deserialization into a Map
-            Map<String, Object> result = objectMapper.readValue(json, HashMap.class);
+            Map<String, Object> result = objectMapper.readValue(json, typeReference);
 
 // Printing the results
             System.out.println("Map result set is : " + result.entrySet());
