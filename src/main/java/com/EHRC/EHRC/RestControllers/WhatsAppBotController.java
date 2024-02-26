@@ -6,6 +6,8 @@ import com.EHRC.EHRC.Repository.BotMenuRepository;
 import com.EHRC.EHRC.Utilities.Utilities;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+//import org.codehaus.jettison.json.JSONObject;
+import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -18,10 +20,11 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+
+//import javax.json.;
+
+//import javax.*;
 
 
 @RestController
@@ -58,21 +61,118 @@ public class WhatsAppBotController {
     public void getRequest(@RequestBody String json) {
         System.out.println(json);
 
+
+
+        ObjectMapper mapper = new ObjectMapper();
+        // create instance of the File class
+//        File fileObj = new File("C:\\Users\\rastogi ji\\OneDrive\\Desktop\\Sample.json");
+        // use try-catch block to convert JSON data into Map
         try {
 
-// ObjectMapper instantiation
-            ObjectMapper objectMapper = new ObjectMapper();
-            TypeReference<Map<String, Object>> typeReference = new TypeReference<Map<String, Object>>(){};
-// Deserialization into a Map
-            Map<String, Object> result = objectMapper.readValue(json, typeReference);
+            Map<String, Object> userData = mapper.readValue(json, new TypeReference<Map<String, Object>>() {
+            });
 
-// Printing the results
-            System.out.println("Map result set is : " + result.entrySet());
-        }catch (Exception e){
-            System.out.println("Exception occurred!!!");
+            // read JSON data from file using fileObj and map it using ObjectMapper and TypeReference classes
+//            Map<String, Object> userData = mapper.readValue(
+//                    fileObj, new TypeReference<Map<String, Object>>() {
+//                    });
+//            // print all key-value pairs
+            System.out.println("Value parsed is " + userData);
+            System.out.println("Name : " + userData.get("Name"));
+            System.out.println("Mobile : " + userData.get("Mobile"));
+            System.out.println("Designation : " + userData.get("Designation"));
+            System.out.println("Pet : " + userData.get("Pet"));
+            System.out.println("Address : " + userData.get("Address"));
+        } catch (Exception e) {
+            // show error message
+            e.printStackTrace();
         }
 
+
+        // Convert JSON to Map
+//            Map<String, Object> map = convertJsonToMap(jsonString);
+//
+//            // Print the resulting Map
+//            for (Map.Entry<String, Object> entry : map.entrySet()) {
+//                System.out.println(entry.getKey() + ": " + entry.getValue());
+//            }
     }
+
+
+
+
+//        public static Map<String, Object> convertJsonToMap(String jsonString) {
+//
+//            JSONObject jsonObject = new JSONObject(jsonString);
+//            Map<String, Object> map = new HashMap<>();
+//
+//            for (Iterator it = jsonObject.keys(); it.hasNext(); ) {
+//                String key = it.next();
+//                Object value = jsonObject.get(key);
+//                map.put(key, value);
+//            }
+//
+//            return map;
+//        }
+
+
+
+
+
+
+
+
+
+
+
+//    /*
+//
+//
+////    import org.json.JSONObject;
+////import java.util.HashMap;
+////import java.util.Map;
+//
+//    public class JsonToMapConverter {
+//        public static void main(String[] args) {
+//            // Assume we have a JSON string:
+//            String jsonString = "{\"name\":\"John\",\"age\":30,\"city\":\"New York\"}";
+//
+//            // Convert JSON to Map
+//            Map<String, Object> map = convertJsonToMap(jsonString);
+//
+//            // Print the resulting Map
+//            for (Map.Entry<String, Object> entry : map.entrySet()) {
+//                System.out.println(entry.getKey() + ": " + entry.getValue());
+//            }
+//        }
+//
+//        public static Map<String, Object> convertJsonToMap(String jsonString) {
+//            JSONObject jsonObject = new JSONObject(jsonString);
+//            Map<String, Object> map = new HashMap<>();
+//
+//            for (String key : jsonObject.keySet()) {
+//                Object value = jsonObject.get(key);
+//                map.put(key, value);
+//            }
+//
+//            return map;
+//        }
+//    }*/
+//
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     @GetMapping("/sendTestMessage/{whatsAppNumber}")
