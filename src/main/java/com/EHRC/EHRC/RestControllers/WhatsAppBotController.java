@@ -64,16 +64,28 @@ public class WhatsAppBotController {
         }.getType());
         // print all key-value pairs
         System.out.println("Data converted is" + userData);
-        System.out.println("Name : " + userData.get("Name"));
-        System.out.println("Mobile : " + userData.get("Mobile"));
-        System.out.println("Designation : " + userData.get("Designation"));
-        System.out.println("Pet : " + userData.get("Pet"));
-        System.out.println("Address : " + userData.get("Address"));
+
+        System.out.println("Entry data is" + userData.get("entry"));
+
+        for (String key : userData.keySet()) {
+            System.out.println("Key is " + key + " and data is : " + userData.get(key));
+        }
+
+//        if(){
+//
+//
+//
+//        }
+
+
+
+
+//        System.out.println("Name : " + userData.get("Name"));
+//        System.out.println("Mobile : " + userData.get("Mobile"));
+//        System.out.println("Designation : " + userData.get("Designation"));
+//        System.out.println("Pet : " + userData.get("Pet"));
+//        System.out.println("Address : " + userData.get("Address"));
     }
-
-
-
-
 
 
 
