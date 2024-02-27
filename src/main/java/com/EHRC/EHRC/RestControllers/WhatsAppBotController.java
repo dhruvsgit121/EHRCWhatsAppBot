@@ -125,7 +125,7 @@ public class WhatsAppBotController {
                 String senderNumber = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getFrom();
                 System.out.println("Falling in if block " + message);
                 System.out.println("Whatsapp message recieved from " + senderNumber);
-                sendWhatsAppMessage(message);
+                sendWhatsAppMessage(message, senderNumber);
             } else {
                 System.out.println("Falling in else Block!!!");
             }
@@ -134,25 +134,24 @@ public class WhatsAppBotController {
         }
     }
 
-    public void sendWhatsAppMessage(String message){
+    public void sendWhatsAppMessage(String message, String senderWhatsAppNumber) throws IOException {
 
         List<BotMenuNames> menuNames = botMenuRepository.getBotChildMenuNames(message);
 
         System.out.println("****************** sendWhatsAppMessage Called *********************");
         System.out.println("Param is : " + message);
         System.out.println("Child Menu names are : " + menuNames);
-        System.out.println("Child Menu names are : " + menuNames);
-
-        InteractiveMessageOuterWrapper wrapper = new InteractiveMessageOuterWrapper();
-        System.out.println("Wrapper data is : " + wrapper);
-
 
         if(menuNames.size() == 0){
             //Return the default message to be sent...
+
+
         }else{
             //Return the Child Menu Options to be sent...
-
-
+            String JSONBody = messageBodyProcessor.getWhatsAppInteractiveMessageWithChildMenuItemsJSON("", senderWhatsAppNumber, menuNames);
+            System.out.println("JSON Data is : " + JSONBody);
+            String whatsappServerResponse = hitWhatsAppServerMessageRequestWithBody(JSONBody);
+            System.out.println("Response after hitting server is " + whatsappServerResponse);
         }
     }
 
