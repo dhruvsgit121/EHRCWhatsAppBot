@@ -55,11 +55,29 @@ public class WhatsAppBotController {
     public String getTestData() throws Exception {
 
         String jsonString = "{\"object\":\"whatsapp_business_account\",\"entry\":[{\"id\":\"244715655388071\",\"changes\":[{\"value\":{\"messaging_product\":\"whatsapp\",\"metadata\":{\"display_phone_number\":\"15551291482\",\"phone_number_id\":\"224738690728648\"},\"contacts\":[{\"profile\":{\"name\":\"DhruvGupta\"},\"wa_id\":\"919015346166\"}],\"messages\":[{\"from\":\"919015346166\",\"id\":\"wamid.HBgMOTE5MDE1MzQ2MTY2FQIAEhgWM0VCMEExNUVDQzRENDRDN0RBNThGNgA=\",\"timestamp\":\"1708980080\",\"text\":{\"body\":\"he;llo\"},\"type\":\"text\"}]},\"field\":\"messages\"}]}]}";
-        ObjectMapper objectMapper = new ObjectMapper();
+//        ObjectMapper objectMapper = new ObjectMapper();
         //Person person = objectMapper.readValue(jsonString, Person.class);
 
-        WebHookResponseBody webHook = objectMapper.readValue(jsonString, WebHookResponseBody.class);
-        ;
+//        WebHookResponseBody webHook = objectMapper.readValue(jsonString, WebHookResponseBody.class);
+
+
+        System.out.println(jsonString);
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            WebHookResponseBody webHook = objectMapper.readValue(jsonString, WebHookResponseBody.class);
+
+            if (webHook.getEntry() != null && webHook.getEntry().length > 0 && webHook.getEntry()[0].getChanges() != null &&
+                    webHook.getEntry()[0].getChanges().length > 0 && webHook.getEntry()[0].getChanges()[0].getValue() != null
+                    && webHook.getEntry()[0].getChanges()[0].getValue().getMessages() != null && webHook.getEntry()[0].getChanges()[0].getValue().getMessages().length > 0
+                    && webHook.getEntry()[0].getChanges()[0].getValue().getMessages().length > 0 && webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText() != null && webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText().getBody() != null) {
+                System.out.println("Falling in if block " + webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText().getBody());
+            } else {
+                System.out.println("Falling in else Block!!!");
+            }
+        } catch (Exception e) {
+            System.out.println("Exception occurred : " + e);
+        };
 
 //        System.out.println("Map data parsed is : " + webHook);
 //
