@@ -1,6 +1,7 @@
 package com.EHRC.EHRC.RestControllers;
 
 import com.EHRC.EHRC.CustomExceptions.PhoneNumberNotValidException;
+import com.EHRC.EHRC.DTU.BotMenuMessageData;
 import com.EHRC.EHRC.DTU.BotMenuNames;
 import com.EHRC.EHRC.Processors.WhatsAppMessageBodyProcessor;
 import com.EHRC.EHRC.Repository.BotMenuRepository;
@@ -109,73 +110,78 @@ public class WhatsAppBotController {
 
 
     ///////////////////////**************************************
-    @GetMapping("/get1")
-    public void getRequestTest() {
+
+//    @GetMapping("/sendTestMessage/{whatsAppNumber}")
+//    public String getHelloWorld(@PathVariable String whatsAppNumber) throws IOException {
+    @GetMapping("/get1/{option}")
+    public void getRequestTest(@PathVariable String option) throws IOException {
+
+        sendWhatsAppMessage(option, "919015346166");
 
         //Normal
         //String json = "{\"object\":\"whatsapp_business_account\",\"entry\":[{\"id\":\"244715655388071\",\"changes\":[{\"value\":{\"messaging_product\":\"whatsapp\",\"metadata\":{\"display_phone_number\":\"15551291482\",\"phone_number_id\":\"224738690728648\"},\"contacts\":[{\"profile\":{\"name\":\"DhruvGupta\"},\"wa_id\":\"919015346166\"}],\"messages\":[{\"from\":\"919015346166\",\"id\":\"wamid.HBgMOTE5MDE1MzQ2MTY2FQIAEhgWM0VCMDg4NkM5RDNGOUVBMTQ1NkE3MwA=\",\"timestamp\":\"1709054681\",\"text\":{\"body\":\"start\"},\"type\":\"text\"}]},\"field\":\"messages\"}]}]}";
 
-        //Intercative
-        String json = "{\"object\":\"whatsapp_business_account\",\"entry\":[{\"id\":\"244715655388071\",\"changes\":[{\"value\":{\"messaging_product\":\"whatsapp\",\"metadata\":{\"display_phone_number\":\"15551291482\",\"phone_number_id\":\"224738690728648\"},\"contacts\":[{\"profile\":{\"name\":\"DhruvGupta\"},\"wa_id\":\"919015346166\"}],\"messages\":[{\"context\":{\"from\":\"15551291482\",\"id\":\"wamid.HBgMOTE5MDE1MzQ2MTY2FQIAERgSNjY1QzYyN0E5NUNBODFCOUYzAA==\"},\"from\":\"919015346166\",\"id\":\"wamid.HBgMOTE5MDE1MzQ2MTY2FQIAEhgWM0VCMDNDNkU3MDA2RjIxNEU4N0NCRQA=\",\"timestamp\":\"1709052807\",\"type\":\"interactive\",\"interactive\":{\"type\":\"list_reply\",\"list_reply\":{\"id\":\"2\",\"title\":\"m\"}}}]},\"field\":\"messages\"}]}]}";
-
-        System.out.println("JSON IS : " + json);
-
-
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            WHResponseTypeWrapper webHook = objectMapper.readValue(json, WHResponseTypeWrapper.class);
-
-            if (webHook.getEntry() != null && webHook.getEntry().length > 0 && webHook.getEntry()[0].getChanges() != null &&
-                    webHook.getEntry()[0].getChanges().length > 0 && webHook.getEntry()[0].getChanges()[0].getValue() != null
-                    && webHook.getEntry()[0].getChanges()[0].getValue().getMessages() != null && webHook.getEntry()[0].getChanges()[0].getValue().getMessages().length > 0
-                    && webHook.getEntry()[0].getChanges()[0].getValue().getMessages().length > 0 ) {
-
-                String messageType = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getType();
-                System.out.println("messageType is = " + messageType);
-
-                String message = "";
-                String senderNumber = "";
-
-                if(messageType.equals("text")){
-
-                    WebHookResponseBody webHook1 = objectMapper.readValue(json, WebHookResponseBody.class);
-
-                    System.out.println("Text type message");
-
-                    message = webHook1.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText().getBody();
-                    senderNumber = webHook1.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getFrom();
-
-                    System.out.println(message);
-                    System.out.println(senderNumber);
-
-                }else if(messageType.equals("interactive")){
-
-                    WHIMResponseWrapper WHIMWrapper = objectMapper.readValue(json, WHIMResponseWrapper.class);
-
-                    System.out.println("Text type message");
-
-                    message = WHIMWrapper.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getInteractive().getList_reply().getTitle();
-                    senderNumber = WHIMWrapper.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getFrom();
-
-                    System.out.println(message);
-                    System.out.println(senderNumber);
-
-                    System.out.println("interactive type message");
-                }
-//htdghd
-//              String message = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText().getBody();
-//              String senderNumber = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getFrom();
-
-//                webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getType();
-                System.out.println("Falling in if block " + message);
-                System.out.println("Whatsapp message recieved from " + senderNumber);
-                sendWhatsAppMessage(message, senderNumber);
-            } else {
-                System.out.println("Falling in else Block!!!");
-            }
-        } catch (Exception e) {
-            System.out.println("Exception occurred : " + e);
-        }
+//        //Intercative
+//        String json = "{\"object\":\"whatsapp_business_account\",\"entry\":[{\"id\":\"244715655388071\",\"changes\":[{\"value\":{\"messaging_product\":\"whatsapp\",\"metadata\":{\"display_phone_number\":\"15551291482\",\"phone_number_id\":\"224738690728648\"},\"contacts\":[{\"profile\":{\"name\":\"DhruvGupta\"},\"wa_id\":\"919015346166\"}],\"messages\":[{\"context\":{\"from\":\"15551291482\",\"id\":\"wamid.HBgMOTE5MDE1MzQ2MTY2FQIAERgSNjY1QzYyN0E5NUNBODFCOUYzAA==\"},\"from\":\"919015346166\",\"id\":\"wamid.HBgMOTE5MDE1MzQ2MTY2FQIAEhgWM0VCMDNDNkU3MDA2RjIxNEU4N0NCRQA=\",\"timestamp\":\"1709052807\",\"type\":\"interactive\",\"interactive\":{\"type\":\"list_reply\",\"list_reply\":{\"id\":\"2\",\"title\":\"m\"}}}]},\"field\":\"messages\"}]}]}";
+//
+//        System.out.println("JSON IS : " + json);
+//
+//
+//        try {
+//            ObjectMapper objectMapper = new ObjectMapper();
+//            WHResponseTypeWrapper webHook = objectMapper.readValue(json, WHResponseTypeWrapper.class);
+//
+//            if (webHook.getEntry() != null && webHook.getEntry().length > 0 && webHook.getEntry()[0].getChanges() != null &&
+//                    webHook.getEntry()[0].getChanges().length > 0 && webHook.getEntry()[0].getChanges()[0].getValue() != null
+//                    && webHook.getEntry()[0].getChanges()[0].getValue().getMessages() != null && webHook.getEntry()[0].getChanges()[0].getValue().getMessages().length > 0
+//                    && webHook.getEntry()[0].getChanges()[0].getValue().getMessages().length > 0 ) {
+//
+//                String messageType = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getType();
+//                System.out.println("messageType is = " + messageType);
+//
+//                String message = "";
+//                String senderNumber = "";
+//
+//                if(messageType.equals("text")){
+//
+//                    WebHookResponseBody webHook1 = objectMapper.readValue(json, WebHookResponseBody.class);
+//
+//                    System.out.println("Text type message");
+//
+//                    message = webHook1.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText().getBody();
+//                    senderNumber = webHook1.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getFrom();
+//
+//                    System.out.println(message);
+//                    System.out.println(senderNumber);
+//
+//                }else if(messageType.equals("interactive")){
+//
+//                    WHIMResponseWrapper WHIMWrapper = objectMapper.readValue(json, WHIMResponseWrapper.class);
+//
+//                    System.out.println("Text type message");
+//
+//                    message = WHIMWrapper.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getInteractive().getList_reply().getTitle();
+//                    senderNumber = WHIMWrapper.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getFrom();
+//
+//                    System.out.println(message);
+//                    System.out.println(senderNumber);
+//
+//                    System.out.println("interactive type message");
+//                }
+////htdghd
+////              String message = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText().getBody();
+////              String senderNumber = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getFrom();
+//
+////                webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getType();
+//                System.out.println("Falling in if block " + message);
+//                System.out.println("Whatsapp message recieved from " + senderNumber);
+//                sendWhatsAppMessage(message, senderNumber);
+//            } else {
+//                System.out.println("Falling in else Block!!!");
+//            }
+//        } catch (Exception e) {
+//            System.out.println("Exception occurred : " + e);
+//        }
     }
     ///////////////////////**************************************
 
@@ -300,6 +306,47 @@ public class WhatsAppBotController {
         if(menuNames.size() == 0){
             //Return the default message to be sent...
 
+            List<BotMenuMessageData> menuMessage = botMenuRepository.getMenuMessage(message);
+
+            String JSONBody = "";
+            String customMessage = "";
+
+//            {
+//                "messaging_product": "whatsapp",
+//                    "preview_url": false,
+//                    "recipient_type": "individual",
+//                    "to": "919015346166",
+//                    "type": "text",
+//                    "text": {
+//                "body": "your-text-message-content"
+//            }
+//            }
+
+            if(menuMessage.size() == 0){
+                //This is a random query... That to be needed by NLP server...
+                customMessage = "This must be handled by NLP processing with option entered - " + message;
+            }else{
+                //This is a menu item from DB... We will display the message...
+                customMessage = "The message of last option entered from DB is - " + menuMessage.get(0).getBotMessage();
+            }
+
+
+            JSONBody = "{\"messaging_product\":\"whatsapp\",\"preview_url\":false,\"recipient_type\":\"individual\",\"to\":\"" +
+                    senderWhatsAppNumber +
+                    "\",\"type\":\"text\",\"text\":{\"body\":\"" +
+                    customMessage +
+                    "\"}}";
+
+            System.out.println("JSON Data is : " + JSONBody);
+            String whatsappServerResponse = hitWhatsAppServerMessageRequestWithBody(JSONBody);
+            System.out.println("Response after hitting server is " + whatsappServerResponse);
+
+
+            System.out.println("*************************************************************");
+            System.out.println("menuMessage : " + menuMessage);
+            System.out.println("menuMessage : " + menuMessage.size());
+
+            System.out.println("*************************************************************");
 
         }else{
             //Return the Child Menu Options to be sent...
