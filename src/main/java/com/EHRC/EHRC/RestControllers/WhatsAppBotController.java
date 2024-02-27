@@ -110,6 +110,9 @@ public class WhatsAppBotController {
 
         System.out.println(json);
 
+
+       // {"object":"whatsapp_business_account","entry":[{"id":"244715655388071","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"15551291482","phone_number_id":"224738690728648"},"contacts":[{"profile":{"name":"Dhruv Gupta"},"wa_id":"919015346166"}],"messages":[{"context":{"from":"15551291482","id":"wamid.HBgMOTE5MDE1MzQ2MTY2FQIAERgSRDE5N0M5NTlCNUVFMjgyOTgzAA=="},"from":"919015346166","id":"wamid.HBgMOTE5MDE1MzQ2MTY2FQIAEhggRDU2RDhBNDNDREUxQzZCQzcwQUFFODAwMTYyODk1NEUA","timestamp":"1709045742","type":"interactive","interactive":{"type":"list_reply","list_reply":{"id":"1","title":"Rahul"}}}]},"field":"messages"}]}]}
+
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             WebHookResponseBody webHook = objectMapper.readValue(json, WebHookResponseBody.class);
@@ -119,7 +122,9 @@ public class WhatsAppBotController {
                     && webHook.getEntry()[0].getChanges()[0].getValue().getMessages() != null && webHook.getEntry()[0].getChanges()[0].getValue().getMessages().length > 0
                     && webHook.getEntry()[0].getChanges()[0].getValue().getMessages().length > 0 && webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText() != null && webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText().getBody() != null) {
                 String message = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText().getBody();
+                String senderNumber = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getFrom();
                 System.out.println("Falling in if block " + message);
+                System.out.println("Whatsapp message recieved from " + senderNumber);
                 sendWhatsAppMessage(message);
             } else {
                 System.out.println("Falling in else Block!!!");
