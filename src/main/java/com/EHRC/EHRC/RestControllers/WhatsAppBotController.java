@@ -138,7 +138,7 @@ public class WhatsAppBotController {
                 }else if(messageType == "interactive"){
                     System.out.println("interactive type message");
                 }
-
+//htdghd
 //              String message = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText().getBody();
 //              String senderNumber = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getFrom();
 
