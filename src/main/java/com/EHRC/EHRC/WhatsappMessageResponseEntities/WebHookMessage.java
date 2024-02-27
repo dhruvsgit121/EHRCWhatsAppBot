@@ -1,6 +1,7 @@
 package com.EHRC.EHRC.WhatsappMessageResponseEntities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 @NoArgsConstructor
@@ -14,9 +15,11 @@ public class WebHookMessage {
     private String id;
     private String timestamp;
     private String type;
+
+    @JsonIgnore
     private WebHookText text;
 
+    @JsonIgnore
     private WHResponseInteractiveWrapper interactive;
-
 
 }
