@@ -2,12 +2,16 @@ package com.EHRC.EHRC.RestControllers;
 
 import com.EHRC.EHRC.CustomExceptions.PhoneNumberNotValidException;
 import com.EHRC.EHRC.DTU.BotMenuNames;
+import com.EHRC.EHRC.Processors.WhatsAppMessageBodyProcessor;
 import com.EHRC.EHRC.Repository.BotMenuRepository;
 import com.EHRC.EHRC.Utilities.Utilities;
+import com.EHRC.EHRC.WhatsAppMessagesWrapper.InteractiveMessage.InteractiveMessageOuterWrapper;
 import com.EHRC.EHRC.WhatsappMessageResponseEntities.WebHookResponseBody;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 //import com.google.gson.Gson;
 //import com.google.gson.reflect.TypeToken;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -19,7 +23,9 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.ProtocolException;
 import java.net.URL;
+import java.sql.SQLOutput;
 import java.util.*;
 
 
@@ -31,6 +37,9 @@ public class WhatsAppBotController {
 
     @Autowired
     private BotMenuRepository botMenuRepository;
+
+//    @Autowired
+    private WhatsAppMessageBodyProcessor messageBodyProcessor;
 
     @PostMapping("/getChildMenuItems")
     public List<BotMenuNames> getMenuChildNames(@RequestParam String menuName) {
@@ -128,7 +137,117 @@ public class WhatsAppBotController {
         System.out.println("Param is : " + message);
         System.out.println("Child Menu names are : " + menuNames);
         System.out.println("Child Menu names are : " + menuNames);
+
+        InteractiveMessageOuterWrapper wrapper = new InteractiveMessageOuterWrapper();
+        System.out.println("Wrapper data is : " + wrapper);
+
+
+        if(menuNames.size() == 0){
+            //Return the default message to be sent...
+        }else{
+            //Return the Child Menu Options to be sent...
+
+
+        }
     }
+
+
+    @GetMapping("/get")
+    public String getStr() throws IOException {
+
+        if(messageBodyProcessor == null)
+            messageBodyProcessor = new WhatsAppMessageBodyProcessor();
+
+        List<BotMenuNames> name = new ArrayList<>();
+
+        name.add(new BotMenuNames(10, "dhruv", 20, "Rahul"));
+        name.add(new BotMenuNames(30, "dhruv1", 50, "Rahul1"));
+        name.add(new BotMenuNames(40, "dhruv2", 60, "Rahul2"));
+
+        String JSONBody = messageBodyProcessor.getWhatsAppInteractiveMessageWithChildMenuItemsJSON("", "919015346166", name);
+
+        System.out.println("JSON Data is : " + JSONBody);
+
+        String whatsappServerResponse = hitWhatsAppServerMessageRequestWithBody(JSONBody);
+        return JSONBody;
+    }
+
+
+
+    public String hitWhatsAppServerMessageRequestWithBody(String JSON) throws IOException {
+
+        String baseURL = env.getProperty("whatsappbot.api.baseurl");
+        String APIVersionNumber = env.getProperty("whatsappbot.api.version");
+        String phoneNumberID = env.getProperty("whatsappbot.api.phone_number_id");
+        String messageApiPath = env.getProperty("whatsappbot.api.api_path");
+
+        String fullAPIPath = baseURL + APIVersionNumber + "/" + phoneNumberID + "/" + messageApiPath;
+
+//        Utilities utilities = new Utilities();
+
+        System.out.println("Request URL is " + fullAPIPath);
+        System.out.println("JSON data is " + JSON);
+
+        String bearerTokenValue = "Bearer " + env.getProperty("whatsappbot.api.bearer_token");
+
+        System.out.println("bearer value = " + bearerTokenValue);
+
+        URL url = new URL(fullAPIPath);
+        HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setDoOutput(true);
+        conn.setRequestProperty("Authorization", bearerTokenValue);
+        conn.setRequestProperty("Content-Type", "application/json");
+
+        try (DataOutputStream dos = new DataOutputStream(conn.getOutputStream())) {
+            dos.writeBytes(JSON);
+        }
+
+        try (BufferedReader bf = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+            String line;
+            while ((line = bf.readLine()) != null) {
+                System.out.println("respose is " + line);
+            }
+        }
+        return fullAPIPath;
+    }
+
+//    {
+//        "messaging_product" : "whatsapp",
+//            "recipient_type" : "individual",
+//            "to" : "919015346166",
+//            "type" : "interactive",
+//            "interactive" : {
+//        "type" : "list",
+//                "header" : {
+//            "text" : "Please select the option, which you want to choose and we can help you in that field.",
+//                    "type" : "text"
+//        },
+//        "body" : {
+//            "text" : "This is the body text."
+//        },
+//        "footer" : {
+//            "text" : "This is the demo footer message."
+//        },
+//        "action" : {
+//            "button" : "Menu Options",
+//                    "sections" : [ {
+//                "rows" : [ {
+//                    "id" : "1",
+//                            "title" : "Rahul"
+//                }, {
+//                    "id" : "2",
+//                            "title" : "Rahul1"
+//                }, {
+//                    "id" : "3",
+//                            "title" : "Rahul2"
+//                } ]
+//            } ]
+//        }
+//    }
+//    }
+
+
 
 
 
@@ -150,8 +269,10 @@ public class WhatsAppBotController {
 
         System.out.println("Whatsapp number is " + fullAPIPath);
 
-        String body2 = "{messaging_product:\"whatsapp\",recipient_type:\"individual\",to:\"919015346166\",type:\"interactive\",interactive:{type:\"list\",header:{type:\"text\",text:\"Select the food item you would like.\",},body:{text:\"You will be presented with a list of options to choose from.\",},footer:{text:\"All of them are freshly packed.\",},action:{button:\"Order\",sections:[{title:\"Section1-Fruit\",rows:[{id:\"1\",title:\"Apple\",description:\"Dozen\",},{id:\"2\",title:\"Orange\",description:\"Dozen\",},],},{title:\"Section2-Vegetables\",rows:[{id:\"3\",title:\"Spinach\",description:\"1kg\",},{id:\"2\",title:\"Broccoli\",description:\"1kg\",},],},],},},}";
+        String body2 = "{\"messaging_product\":\"whatsapp\",\"recipient_type\":\"individual\",\"to\":\"919015346166\",\"type\":\"interactive\",\"interactive\":{\"type\":\"list\",\"header\":{\"type\":\"text\",\"text\":\"Selectthefooditemyouwouldlike.\"},\"body\":{\"text\":\"Youwillbepresentedwithalistofoptionstochoosefrom.\"},\"footer\":{\"text\":\"Allofthemarefreshlypacked.\"},\"action\":{\"button\":\"Order\",\"sections\":[{\"rows\":[{\"id\":\"1\",\"title\":\"Apple\"},{\"id\":\"2\",\"title\":\"Orange\"}]}]}}}";
 
+//        String body2 = "{messaging_product:\"whatsapp\",recipient_type:\"individual\",to:\"919015346166\",type:\"interactive\",interactive:{type:\"list\",header:{type:\"text\",text:\"Select the food item you would like.\",},body:{text:\"You will be presented with a list of options to choose from.\",},footer:{text:\"All of them are freshly packed.\",},action:{button:\"Order\",sections:[{rows:[{id:\"1\",title:\"Apple\"},{id:\"2\",title:\"Orange\"},],},],},},}";
+        System.out.println(body2);
 //        String body2 = "{\"from\":\"224738690728648\",\"to\":\"919015346166\"," +
 //                "\"channel\":\"whatsapp\",\"message_type\":\"custom\"," +
 //                "\"custom\":{\"type\":\"interactive\",\"interactive\":" +
