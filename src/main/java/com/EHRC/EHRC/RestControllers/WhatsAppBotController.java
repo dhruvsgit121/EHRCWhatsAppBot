@@ -4,7 +4,7 @@ import com.EHRC.EHRC.CustomExceptions.PhoneNumberNotValidException;
 import com.EHRC.EHRC.DTU.BotMenuNames;
 import com.EHRC.EHRC.Repository.BotMenuRepository;
 import com.EHRC.EHRC.Utilities.Utilities;
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.EHRC.EHRC.WhatsappMessageResponseEntities.WebHookResponseBody;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -51,45 +51,54 @@ public class WhatsAppBotController {
         }
     }
 
-    @PostMapping("/webhook")
-    public void getRequest(@RequestBody String json) {
-        System.out.println(json);
+    @GetMapping("/test")
+    public String getTestData() throws Exception {
 
-//        String loc = "C:\\Users\\rastogi ji\\OneDrive\\Desktop\\Sample.json";
-//        String result;
-        // read byte data from the Sample.json file and convert it into String
-        //result = new String(Files.readAllBytes(Paths.get(loc)));
-        // store string data into Map by using TypeToken class
-        Map<String, Object> userData = new Gson().fromJson(json, new TypeToken<HashMap<String, Object>>() {
-        }.getType());
-        // print all key-value pairs
-        System.out.println("Data converted is" + userData);
+        String jsonString = "{\"object\":\"whatsapp_business_account\",\"entry\":[{\"id\":\"244715655388071\",\"changes\":[{\"value\":{\"messaging_product\":\"whatsapp\",\"metadata\":{\"display_phone_number\":\"15551291482\",\"phone_number_id\":\"224738690728648\"},\"contacts\":[{\"profile\":{\"name\":\"DhruvGupta\"},\"wa_id\":\"919015346166\"}],\"messages\":[{\"from\":\"919015346166\",\"id\":\"wamid.HBgMOTE5MDE1MzQ2MTY2FQIAEhgWM0VCMEExNUVDQzRENDRDN0RBNThGNgA=\",\"timestamp\":\"1708980080\",\"text\":{\"body\":\"he;llo\"},\"type\":\"text\"}]},\"field\":\"messages\"}]}]}";
+        ObjectMapper objectMapper = new ObjectMapper();
+        //Person person = objectMapper.readValue(jsonString, Person.class);
 
-        System.out.println("Entry data is" + userData.get("entry"));
+        WebHookResponseBody webHook = objectMapper.readValue(jsonString, WebHookResponseBody.class);
+        ;
 
-        for (String key : userData.keySet()) {
-            System.out.println("Key is " + key + " and data is : " + userData.get(key));
-        }
-
-//        if(){
+//        System.out.println("Map data parsed is : " + webHook);
 //
+//        System.out.println(webHook.getEntry()[0].getId());
+//        System.out.println(webHook.getObject());
+//        System.out.println(webHook.getEntry()[0].getChanges());
 //
-//
-//        }
+//        System.out.println(webHook.getEntry()[0].getChanges()[0].getField());
+//        System.out.println(webHook.getEntry()[0].getChanges()[0].getValue());
 
 
+//        System.out.println(webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0]);
 
 
-//        System.out.println("Name : " + userData.get("Name"));
-//        System.out.println("Mobile : " + userData.get("Mobile"));
-//        System.out.println("Designation : " + userData.get("Designation"));
-//        System.out.println("Pet : " + userData.get("Pet"));
-//        System.out.println("Address : " + userData.get("Address"));
+        return "Hello Test!!!";
     }
 
 
+    @PostMapping("/webhook")
+    public void getRequest(@RequestBody String json) {
 
+        System.out.println(json);
 
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            WebHookResponseBody webHook = objectMapper.readValue(json, WebHookResponseBody.class);
+
+            if (webHook.getEntry() != null && webHook.getEntry().length > 0 && webHook.getEntry()[0].getChanges() != null &&
+                    webHook.getEntry()[0].getChanges().length > 0 && webHook.getEntry()[0].getChanges()[0].getValue() != null
+                    && webHook.getEntry()[0].getChanges()[0].getValue().getMessages() != null && webHook.getEntry()[0].getChanges()[0].getValue().getMessages().length > 0
+                    && webHook.getEntry()[0].getChanges()[0].getValue().getMessages().length > 0 && webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText() != null && webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText().getBody() != null) {
+                System.out.println("Falling in if block " + webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText().getBody());
+            } else {
+                System.out.println("Falling in else Block!!!");
+            }
+        } catch (Exception e) {
+            System.out.println("Exception occurred : " + e);
+        }
+    }
 
 
     @GetMapping("/sendTestMessage/{whatsAppNumber}")
