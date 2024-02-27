@@ -16,10 +16,10 @@ public class WebHookMessage {
     private String timestamp;
     private String type;
 
-    @JsonIgnore
+//    @JsonIgnore
     private WebHookText text;
 
-    @JsonIgnore
-    private WHResponseInteractiveWrapper interactive;
+//    @JsonIgnore
+//    private WHResponseInteractiveWrapper interactive;
 
 }

@@ -5,6 +5,9 @@ import com.EHRC.EHRC.DTU.BotMenuNames;
 import com.EHRC.EHRC.Processors.WhatsAppMessageBodyProcessor;
 import com.EHRC.EHRC.Repository.BotMenuRepository;
 import com.EHRC.EHRC.Utilities.Utilities;
+import com.EHRC.EHRC.WHIntercativeMessageResponseWrapper.WHIMResponseWrapper;
+import com.EHRC.EHRC.WebHookResponseWrapper.WHTypeWrapper.WHResponseTypeWrapper;
+import com.EHRC.EHRC.WebHookResponseWrapper.WHTypeWrapper.WHResponseValueWrapper;
 import com.EHRC.EHRC.WhatsAppMessagesWrapper.InteractiveMessage.InteractiveMessageOuterWrapper;
 import com.EHRC.EHRC.WhatsappMessageResponseEntities.WebHookResponseBody;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -105,24 +108,28 @@ public class WhatsAppBotController {
     }
 
 
-    @PostMapping("/webhook")
-    public void getRequest(@RequestBody String json) {
+    ///////////////////////**************************************
+    @GetMapping("/get1")
+    public void getRequestTest() {
 
-        System.out.println(json);
+        //Normal
+        //String json = "{\"object\":\"whatsapp_business_account\",\"entry\":[{\"id\":\"244715655388071\",\"changes\":[{\"value\":{\"messaging_product\":\"whatsapp\",\"metadata\":{\"display_phone_number\":\"15551291482\",\"phone_number_id\":\"224738690728648\"},\"contacts\":[{\"profile\":{\"name\":\"DhruvGupta\"},\"wa_id\":\"919015346166\"}],\"messages\":[{\"from\":\"919015346166\",\"id\":\"wamid.HBgMOTE5MDE1MzQ2MTY2FQIAEhgWM0VCMDg4NkM5RDNGOUVBMTQ1NkE3MwA=\",\"timestamp\":\"1709054681\",\"text\":{\"body\":\"start\"},\"type\":\"text\"}]},\"field\":\"messages\"}]}]}";
 
+        //Intercative
+        String json = "{\"object\":\"whatsapp_business_account\",\"entry\":[{\"id\":\"244715655388071\",\"changes\":[{\"value\":{\"messaging_product\":\"whatsapp\",\"metadata\":{\"display_phone_number\":\"15551291482\",\"phone_number_id\":\"224738690728648\"},\"contacts\":[{\"profile\":{\"name\":\"DhruvGupta\"},\"wa_id\":\"919015346166\"}],\"messages\":[{\"context\":{\"from\":\"15551291482\",\"id\":\"wamid.HBgMOTE5MDE1MzQ2MTY2FQIAERgSNjY1QzYyN0E5NUNBODFCOUYzAA==\"},\"from\":\"919015346166\",\"id\":\"wamid.HBgMOTE5MDE1MzQ2MTY2FQIAEhgWM0VCMDNDNkU3MDA2RjIxNEU4N0NCRQA=\",\"timestamp\":\"1709052807\",\"type\":\"interactive\",\"interactive\":{\"type\":\"list_reply\",\"list_reply\":{\"id\":\"2\",\"title\":\"m\"}}}]},\"field\":\"messages\"}]}]}";
 
-       // {"object":"whatsapp_business_account","entry":[{"id":"244715655388071","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"15551291482","phone_number_id":"224738690728648"},"contacts":[{"profile":{"name":"Dhruv Gupta"},"wa_id":"919015346166"}],"messages":[{"context":{"from":"15551291482","id":"wamid.HBgMOTE5MDE1MzQ2MTY2FQIAERgSRDE5N0M5NTlCNUVFMjgyOTgzAA=="},"from":"919015346166","id":"wamid.HBgMOTE5MDE1MzQ2MTY2FQIAEhggRDU2RDhBNDNDREUxQzZCQzcwQUFFODAwMTYyODk1NEUA","timestamp":"1709045742","type":"interactive","interactive":{"type":"list_reply","list_reply":{"id":"1","title":"Rahul"}}}]},"field":"messages"}]}]}
+        System.out.println("JSON IS : " + json);
+
 
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            WebHookResponseBody webHook = objectMapper.readValue(json, WebHookResponseBody.class);
+            WHResponseTypeWrapper webHook = objectMapper.readValue(json, WHResponseTypeWrapper.class);
 
             if (webHook.getEntry() != null && webHook.getEntry().length > 0 && webHook.getEntry()[0].getChanges() != null &&
                     webHook.getEntry()[0].getChanges().length > 0 && webHook.getEntry()[0].getChanges()[0].getValue() != null
                     && webHook.getEntry()[0].getChanges()[0].getValue().getMessages() != null && webHook.getEntry()[0].getChanges()[0].getValue().getMessages().length > 0
                     && webHook.getEntry()[0].getChanges()[0].getValue().getMessages().length > 0 ) {
 
-//
                 String messageType = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getType();
                 System.out.println("messageType is = " + messageType);
 
@@ -130,13 +137,28 @@ public class WhatsAppBotController {
                 String senderNumber = "";
 
                 if(messageType.equals("text")){
-                    System.out.println("text type message");
-                    message = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText().getBody();
-                    senderNumber = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getFrom();
+
+                    WebHookResponseBody webHook1 = objectMapper.readValue(json, WebHookResponseBody.class);
+
+                    System.out.println("Text type message");
+
+                    message = webHook1.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText().getBody();
+                    senderNumber = webHook1.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getFrom();
+
+                    System.out.println(message);
+                    System.out.println(senderNumber);
+
                 }else if(messageType.equals("interactive")){
 
+                    WHIMResponseWrapper WHIMWrapper = objectMapper.readValue(json, WHIMResponseWrapper.class);
 
+                    System.out.println("Text type message");
 
+                    message = WHIMWrapper.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getInteractive().getList_reply().getTitle();
+                    senderNumber = WHIMWrapper.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getFrom();
+
+                    System.out.println(message);
+                    System.out.println(senderNumber);
 
                     System.out.println("interactive type message");
                 }
@@ -154,6 +176,114 @@ public class WhatsAppBotController {
         } catch (Exception e) {
             System.out.println("Exception occurred : " + e);
         }
+    }
+    ///////////////////////**************************************
+
+
+    @PostMapping("/webhook")
+    public void getRequest(@RequestBody String json) {
+
+        System.out.println(json);
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            WHResponseTypeWrapper webHook = objectMapper.readValue(json, WHResponseTypeWrapper.class);
+
+            if (webHook.getEntry() != null && webHook.getEntry().length > 0 && webHook.getEntry()[0].getChanges() != null &&
+                    webHook.getEntry()[0].getChanges().length > 0 && webHook.getEntry()[0].getChanges()[0].getValue() != null
+                    && webHook.getEntry()[0].getChanges()[0].getValue().getMessages() != null && webHook.getEntry()[0].getChanges()[0].getValue().getMessages().length > 0
+                    && webHook.getEntry()[0].getChanges()[0].getValue().getMessages().length > 0 ) {
+
+                String messageType = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getType();
+                System.out.println("messageType is = " + messageType);
+
+                String message = "";
+                String senderNumber = "";
+
+                if(messageType.equals("text")){
+
+                    WebHookResponseBody webHook1 = objectMapper.readValue(json, WebHookResponseBody.class);
+
+                    System.out.println("Text type message");
+
+                    message = webHook1.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText().getBody();
+                    senderNumber = webHook1.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getFrom();
+
+                    System.out.println(message);
+                    System.out.println(senderNumber);
+
+                }else if(messageType.equals("interactive")){
+
+                    WHIMResponseWrapper WHIMWrapper = objectMapper.readValue(json, WHIMResponseWrapper.class);
+
+                    System.out.println("Text type message");
+
+                    message = WHIMWrapper.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getInteractive().getList_reply().getTitle();
+                    senderNumber = WHIMWrapper.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getFrom();
+
+                    System.out.println(message);
+                    System.out.println(senderNumber);
+
+                    System.out.println("interactive type message");
+                }
+//htdghd
+//              String message = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText().getBody();
+//              String senderNumber = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getFrom();
+
+//                webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getType();
+                System.out.println("Falling in if block " + message);
+                System.out.println("Whatsapp message recieved from " + senderNumber);
+                sendWhatsAppMessage(message, senderNumber);
+            } else {
+                System.out.println("Falling in else Block!!!");
+            }
+        } catch (Exception e) {
+            System.out.println("Exception occurred : " + e);
+        }
+
+       // {"object":"whatsapp_business_account","entry":[{"id":"244715655388071","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"15551291482","phone_number_id":"224738690728648"},"contacts":[{"profile":{"name":"Dhruv Gupta"},"wa_id":"919015346166"}],"messages":[{"context":{"from":"15551291482","id":"wamid.HBgMOTE5MDE1MzQ2MTY2FQIAERgSRDE5N0M5NTlCNUVFMjgyOTgzAA=="},"from":"919015346166","id":"wamid.HBgMOTE5MDE1MzQ2MTY2FQIAEhggRDU2RDhBNDNDREUxQzZCQzcwQUFFODAwMTYyODk1NEUA","timestamp":"1709045742","type":"interactive","interactive":{"type":"list_reply","list_reply":{"id":"1","title":"Rahul"}}}]},"field":"messages"}]}]}
+
+//        try {
+//            ObjectMapper objectMapper = new ObjectMapper();
+//            WebHookResponseBody webHook = objectMapper.readValue(json, WebHookResponseBody.class);
+//
+//            if (webHook.getEntry() != null && webHook.getEntry().length > 0 && webHook.getEntry()[0].getChanges() != null &&
+//                    webHook.getEntry()[0].getChanges().length > 0 && webHook.getEntry()[0].getChanges()[0].getValue() != null
+//                    && webHook.getEntry()[0].getChanges()[0].getValue().getMessages() != null && webHook.getEntry()[0].getChanges()[0].getValue().getMessages().length > 0
+//                    && webHook.getEntry()[0].getChanges()[0].getValue().getMessages().length > 0 ) {
+//
+////
+//                String messageType = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getType();
+//                System.out.println("messageType is = " + messageType);
+//
+//                String message = "";
+//                String senderNumber = "";
+//
+//                if(messageType.equals("text")){
+//                    System.out.println("text type message");
+//                    message = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText().getBody();
+//                    senderNumber = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getFrom();
+//                }else if(messageType.equals("interactive")){
+//
+//
+//
+//
+//                    System.out.println("interactive type message");
+//                }
+////htdghd
+////              String message = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText().getBody();
+////              String senderNumber = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getFrom();
+//
+////                webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getType();
+//                System.out.println("Falling in if block " + message);
+//                System.out.println("Whatsapp message recieved from " + senderNumber);
+//                sendWhatsAppMessage(message, senderNumber);
+//            } else {
+//                System.out.println("Falling in else Block!!!");
+//            }
+//        } catch (Exception e) {
+//            System.out.println("Exception occurred : " + e);
+//        }
     }
 
     public void sendWhatsAppMessage(String message, String senderWhatsAppNumber) throws IOException {
