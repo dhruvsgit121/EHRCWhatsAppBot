@@ -16,6 +16,7 @@ public class WebHookMessage {
     private String type;
     private WebHookText text;
 
+    private WHResponseInteractiveWrapper interactive;
 
 
 }

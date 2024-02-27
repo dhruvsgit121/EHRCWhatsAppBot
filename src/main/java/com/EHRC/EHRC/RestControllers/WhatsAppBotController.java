@@ -122,9 +122,7 @@ public class WhatsAppBotController {
                     && webHook.getEntry()[0].getChanges()[0].getValue().getMessages() != null && webHook.getEntry()[0].getChanges()[0].getValue().getMessages().length > 0
                     && webHook.getEntry()[0].getChanges()[0].getValue().getMessages().length > 0 ) {
 
-//                && webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText() != null &&
-//                webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText().getBody() != null
-
+//            
                 String messageType = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getType();
                 System.out.println("messageType is = " + messageType);
 
@@ -136,6 +134,10 @@ public class WhatsAppBotController {
                     message = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText().getBody();
                     senderNumber = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getFrom();
                 }else if(messageType.equals("interactive")){
+
+
+
+
                     System.out.println("interactive type message");
                 }
 //htdghd
