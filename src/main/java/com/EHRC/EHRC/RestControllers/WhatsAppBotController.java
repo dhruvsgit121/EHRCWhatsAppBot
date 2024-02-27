@@ -131,18 +131,18 @@ public class WhatsAppBotController {
                 String message = "";
                 String senderNumber = "";
 
-                if(messageType == "text"){
+                if(messageType.equals("text")){
                     System.out.println("text type message");
                     message = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText().getBody();
                     senderNumber = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getFrom();
-                }else if(messageType == "interactive"){
+                }else if(messageType.equals("interactive")){
                     System.out.println("interactive type message");
                 }
 //htdghd
 //              String message = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText().getBody();
 //              String senderNumber = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getFrom();
 
-                webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getType();
+//                webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getType();
                 System.out.println("Falling in if block " + message);
                 System.out.println("Whatsapp message recieved from " + senderNumber);
                 sendWhatsAppMessage(message, senderNumber);
