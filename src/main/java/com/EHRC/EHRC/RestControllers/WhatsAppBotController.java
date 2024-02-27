@@ -120,9 +120,29 @@ public class WhatsAppBotController {
             if (webHook.getEntry() != null && webHook.getEntry().length > 0 && webHook.getEntry()[0].getChanges() != null &&
                     webHook.getEntry()[0].getChanges().length > 0 && webHook.getEntry()[0].getChanges()[0].getValue() != null
                     && webHook.getEntry()[0].getChanges()[0].getValue().getMessages() != null && webHook.getEntry()[0].getChanges()[0].getValue().getMessages().length > 0
-                    && webHook.getEntry()[0].getChanges()[0].getValue().getMessages().length > 0 && webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText() != null && webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText().getBody() != null) {
-                String message = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText().getBody();
-                String senderNumber = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getFrom();
+                    && webHook.getEntry()[0].getChanges()[0].getValue().getMessages().length > 0 ) {
+
+//                && webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText() != null &&
+//                webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText().getBody() != null
+
+                String messageType = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getType();
+                System.out.println("messageType is = " + messageType);
+
+                String message = "";
+                String senderNumber = "";
+
+                if(messageType == "text"){
+                    System.out.println("text type message");
+                    message = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText().getBody();
+                    senderNumber = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getFrom();
+                }else if(messageType == "interactive"){
+                    System.out.println("interactive type message");
+                }
+
+//              String message = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText().getBody();
+//              String senderNumber = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getFrom();
+
+                webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getType()
                 System.out.println("Falling in if block " + message);
                 System.out.println("Whatsapp message recieved from " + senderNumber);
                 sendWhatsAppMessage(message, senderNumber);
