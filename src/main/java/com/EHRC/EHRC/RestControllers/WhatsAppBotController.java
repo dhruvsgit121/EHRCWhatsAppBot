@@ -142,7 +142,7 @@ public class WhatsAppBotController {
 //              String message = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText().getBody();
 //              String senderNumber = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getFrom();
 
-                webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getType()
+                webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getType();
                 System.out.println("Falling in if block " + message);
                 System.out.println("Whatsapp message recieved from " + senderNumber);
                 sendWhatsAppMessage(message, senderNumber);
