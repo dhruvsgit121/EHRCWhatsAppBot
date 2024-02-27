@@ -122,7 +122,7 @@ public class WhatsAppBotController {
                     && webHook.getEntry()[0].getChanges()[0].getValue().getMessages() != null && webHook.getEntry()[0].getChanges()[0].getValue().getMessages().length > 0
                     && webHook.getEntry()[0].getChanges()[0].getValue().getMessages().length > 0 ) {
 
-//            
+//
                 String messageType = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getType();
                 System.out.println("messageType is = " + messageType);
 
