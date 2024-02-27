@@ -99,3 +99,10 @@ public class WhatsAppMessageBodyProcessor {
         return menuWrapper;
     }
 }
+
+//    Child Menu names are : [BotMenuNames(parentID=1, BotMenuName=start, childId=2, childMenuName=a), BotMenuNames(parentID=1, BotMenuName=start, childId=3, childMenuName=b)]
+//
+//        Exception occurred : java.lang.NullPointerException: Cannot invoke
+//        "com.EHRC.EHRC.Processors.WhatsAppMessageBodyProcessor." +
+//        "getWhatsAppInteractiveMessageWithChildMenuItemsJSON(String, String, java.util.List)"
+//        because "this.messageBodyProcessor" is null

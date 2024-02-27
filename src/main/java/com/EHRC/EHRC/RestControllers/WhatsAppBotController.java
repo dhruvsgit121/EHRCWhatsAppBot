@@ -136,6 +136,9 @@ public class WhatsAppBotController {
 
     public void sendWhatsAppMessage(String message, String senderWhatsAppNumber) throws IOException {
 
+        if(messageBodyProcessor == null)
+            messageBodyProcessor = new WhatsAppMessageBodyProcessor();
+
         List<BotMenuNames> menuNames = botMenuRepository.getBotChildMenuNames(message);
 
         System.out.println("****************** sendWhatsAppMessage Called *********************");
