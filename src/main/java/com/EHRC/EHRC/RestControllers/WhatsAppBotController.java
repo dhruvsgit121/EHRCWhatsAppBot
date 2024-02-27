@@ -6,8 +6,8 @@ import com.EHRC.EHRC.Repository.BotMenuRepository;
 import com.EHRC.EHRC.Utilities.Utilities;
 import com.EHRC.EHRC.WhatsappMessageResponseEntities.WebHookResponseBody;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+//import com.google.gson.Gson;
+//import com.google.gson.reflect.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -109,7 +109,9 @@ public class WhatsAppBotController {
                     webHook.getEntry()[0].getChanges().length > 0 && webHook.getEntry()[0].getChanges()[0].getValue() != null
                     && webHook.getEntry()[0].getChanges()[0].getValue().getMessages() != null && webHook.getEntry()[0].getChanges()[0].getValue().getMessages().length > 0
                     && webHook.getEntry()[0].getChanges()[0].getValue().getMessages().length > 0 && webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText() != null && webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText().getBody() != null) {
-                System.out.println("Falling in if block " + webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText().getBody());
+                String message = webHook.getEntry()[0].getChanges()[0].getValue().getMessages()[0].getText().getBody();
+                System.out.println("Falling in if block " + message);
+                sendWhatsAppMessage(message);
             } else {
                 System.out.println("Falling in else Block!!!");
             }
@@ -117,6 +119,17 @@ public class WhatsAppBotController {
             System.out.println("Exception occurred : " + e);
         }
     }
+
+    public void sendWhatsAppMessage(String message){
+
+        List<BotMenuNames> menuNames = botMenuRepository.getBotChildMenuNames(message);
+
+        System.out.println("****************** sendWhatsAppMessage Called *********************");
+        System.out.println("Param is : " + message);
+        System.out.println("Child Menu names are : " + menuNames);
+        System.out.println("Child Menu names are : " + menuNames);
+    }
+
 
 
     @GetMapping("/sendTestMessage/{whatsAppNumber}")
